@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Caridad Espiritual - Sabiduría Ancestral</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Noto+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#c1a26c",
+                        "accent-red": "#B0655B",
+                        "terracotta": "#B0655B",
+                        "accent-green": "#3F7A5E",
+                        "forest": "#3F7A5E",
+                        "background-light": "#f8f7f7",
+                        "background-dark": "#171f30",
+                        "growth-green": "#3F7A5E",
+                    },
+                    fontFamily: {
+                        "display": ["Noto Serif", "serif"],
+                        "sans": ["Noto Sans", "sans-serif"],
+                        "manrope": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .organic-border {
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        }
+        .soft-glow {
+            box-shadow: 0 0 40px rgba(193, 162, 108, 0.15);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+        }
+        .dark .glass-card {
+            background: rgba(23, 31, 48, 0.7);
+            backdrop-filter: blur(8px);
+        }
+        .product-card:hover {
+            box-shadow: 0 20px 40px -12px rgba(193, 162, 108, 0.25);
+            transform: translateY(-4px);
+            transition: all 0.3s ease;
+        }
+    </style>
+
+    <!-- Load Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-sans text-[#161513] transition-colors duration-300">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Shared Components ---
+
+        const Navigation = () => {
+            const location = useLocation();
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            
+            const navLinks = [
+                { name: 'Inicio', path: '/' },
+                { name: 'Bazar', path: '/bazar' },
+                { name: 'Horóscopos', path: '/horoscopo' },
+                { name: 'Quien Soy', path: '/quien-soy' },
+                { name: 'Servicios', path: '/servicios' },
+                { name: 'Contacto', path: '/contacto' }
+            ];
+
+            const isActive = (path) => location.pathname === path;
+
+            return (
+                <header className="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10 px-6 lg:px-20 py-4">
+                    <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+                        <Link to="/" className="flex items-center gap-3">
+                            <div className="size-8 text-primary">
+                                <svg fill="currentColor" viewBox="0 0 48 48">
+                                    <path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"></path>
+                                </svg>
+                            </div>
+                            <h2 className="text-[#161513] dark:text-white text-xl font-display font-bold tracking-tight">Caridad Espiritual</h2>
+                        </Link>
+                        
+                        <nav className="hidden lg:flex items-center gap-8">
+                            {navLinks.map(link => (
+                                <Link 
+                                    key={link.path}
+                                    to={link.path} 
+                                    className={`text-sm font-medium transition-colors ${isActive(link.path) ? 'text-primary font-bold' : 'hover:text-primary dark:text-gray-300'}`}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                            <button className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-all shadow-md">
+                                Conectar
+                            </button>
+                        </nav>
+
+                        {/* Mobile Menu Button */}
+                        <button className="lg:hidden text-primary" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                            <span className="material-symbols-outlined">{isMenuOpen ? 'close' : 'menu'}</span>
+                        </button>
+                    </div>
+
+                    {/* Mobile Menu */}
+                    {isMenuOpen && (
+                        <div className="lg:hidden absolute top-full left-0 w-full bg-white dark:bg-background-dark border-b border-primary/10 p-6 flex flex-col gap-4 shadow-xl">
+                            {navLinks.map(link => (
+                                <Link 
+                                    key={link.path}
+                                    to={link.path} 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className={`text-base font-medium ${isActive(link.path) ? 'text-primary' : 'text-gray-600 dark:text-gray-300'}`}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </header>
+            );
+        };
+
+        const Footer = () => (
+            <footer className="bg-white dark:bg-background-dark border-t border-primary/10 px-6 md:px-20 py-16">
+                <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+                    <div className="flex flex-col gap-6 md:col-span-1">
+                        <div className="flex items-center gap-3 text-primary">
+                            <span className="material-symbols-outlined text-3xl">spa</span>
+                            <h2 className="text-xl font-display font-bold tracking-tight text-[#161513] dark:text-white">Caridad Espiritual</h2>
+                        </div>
+                        <p className="text-sm text-gray-500 leading-relaxed">
+                            Un santuario para el descubrimiento del alma y el crecimiento holístico. Honramos las viejas costumbres mientras abrazamos lo nuevo.
+                        </p>
+                        <div className="flex gap-4">
+                            <span className="material-symbols-outlined cursor-pointer text-primary hover:opacity-70">public</span>
+                            <span className="material-symbols-outlined cursor-pointer text-primary hover:opacity-70">share</span>
+                            <span className="material-symbols-outlined cursor-pointer text-primary hover:opacity-70">mail</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-primary">Explorar</h4>
+                        <ul className="flex flex-col gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <li><Link to="/bazar" className="hover:text-primary transition-colors">El Bazar</Link></li>
+                            <li><Link to="/horoscopo" className="hover:text-primary transition-colors">Horóscopo</Link></li>
+                            <li><Link to="/servicios" className="hover:text-primary transition-colors">Servicios</Link></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-primary">Soporte</h4>
+                        <ul className="flex flex-col gap-3 text-sm text-gray-600 dark:text-gray-400">
+                            <li><a className="hover:text-primary transition-colors" href="#">Privacidad</a></li>
+                            <li><a className="hover:text-primary transition-colors" href="#">Términos</a></li>
+                            <li><Link to="/contacto" className="hover:text-primary transition-colors">Contacto</Link></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-sm uppercase tracking-widest mb-6 text-primary">Boletín</h4>
+                        <div className="bg-primary/10 p-4 rounded-lg">
+                            <p className="text-xs text-primary font-bold mb-2">Únete a nuestra luz</p>
+                            <div className="flex">
+                                <input className="bg-white dark:bg-background-dark border-none rounded-l-md text-xs w-full focus:ring-1 focus:ring-primary" placeholder="Email" type="email"/>
+                                <button className="bg-primary text-white px-3 rounded-r-md">
+                                    <span className="material-symbols-outlined text-sm">send</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-16 pt-8 border-t border-primary/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+                    <p>© 2024 Caridad Espiritual. Hecho con intención.</p>
+                    <div className="flex gap-6 italic"><span>Que tu camino sea bendecido.</span></div>
+                </div>
+            </footer>
+        );
+
+        // --- Page Components ---
+
+        const HomePage = () => (
+            <main className="flex-1">
+                <section className="px-6 md:px-20 py-10">
+                    <div className="relative overflow-hidden rounded-xl h-[600px] flex items-center justify-center text-center p-8 bg-[#161513]">
+                        <div className="absolute inset-0 opacity-60">
+                            <img alt="Bosque místico" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq58GN22gSGU2O9fk5t-foqW54uQ1Ym-d62WgvQYYTYZG8DtScT6S4mGxpNWJ-hcF_noBI5EM48veHXkK_kAuvDl1u6VpWuTLr9yMQPOq1IFUmvYuxTi3nXOO0e5iT6N_JKGRgW_tkGkKH2Ep71Lc7mhRaoV_Gl07mwU3q9i2O6lSVXTIOWokDRmTLNX1_DR24erQDgNK7vr98bNl4mXUIN3Dkc-CwyYl_G1GOwC1pKI985mIoDqAcaIFx9DoSRWNeYVpQsx0P8aQT"/>
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-background-dark/80 via-transparent to-transparent"></div>
+                        <div className="relative z-10 max-w-2xl flex flex-col gap-6 items-center">
+                            <h1 className="text-white text-5xl md:text-7xl font-bold font-display leading-tight tracking-tight">Caridad Espiritual</h1>
+                            <p className="text-white/90 text-lg md:text-xl font-light italic">Sabiduría Ancestral para el Alma Moderna</p>
+                            <div className="flex gap-4 mt-4">
+                                <Link to="/bazar" className="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-primary text-white font-bold transition-transform hover:scale-105">Explorar Bazar</Link>
+                                <Link to="/horoscopo" className="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 border-2 border-white text-white font-bold hover:bg-white hover:text-black transition-all">Lectura Diaria</Link>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section className="px-6 md:px-20 py-16 max-w-4xl mx-auto text-center">
+                    <div className="flex justify-center mb-6"><span className="material-symbols-outlined text-primary text-4xl">eco</span></div>
+                    <h2 className="text-3xl md:text-4xl font-bold font-display mb-6">Nuestra Misión</h2>
+                    <p className="text-lg md:text-xl font-light leading-relaxed text-gray-700 dark:text-gray-300">
+                        Cerrando la brecha entre lo material y lo espiritual con gracia y autenticidad. Ofrecemos un santuario para la reflexión y el crecimiento.
+                    </p>
+                </section>
+                <section className="px-6 md:px-20 py-16">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <Link to="/horoscopo" className="group relative aspect-[3/4] overflow-hidden rounded-xl soft-glow cursor-pointer transition-all hover:-translate-y-2">
+                            <img className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr3iMejljs0snOZt819BFzIQBJk5jPPf4NtX1Xrtanb36n5ClyqmWLfidl7Il0DF4sEZSsxoo9rzTK2uRW74-QdYJZAHeelyOulgQ5okml36ZqjeF7E-GLNISPpsBevcR7Kd8sG-y2pYOaflBUkIRCNiTtqq1BRK05e-R24-x3HWE_X9wSuMXJO9DEXSIoXtQtQgb9shzHc_nurgXQFwVXjlW1ReSjIziX5rNtNIWfgun5vDF8WzZ3t9w3GJlqUda8ZB35XH-wpWA6" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                            <div className="absolute bottom-0 left-0 p-8 w-full text-white">
+                                <span className="text-primary text-xs font-bold tracking-widest uppercase mb-2 block">Perspectivas</span>
+                                <h3 className="text-2xl font-display font-bold">Horóscopo Diario</h3>
+                                <div className="mt-4 flex items-center gap-2 text-primary font-bold"><span>Ver Guía</span> <span className="material-symbols-outlined text-sm">arrow_forward</span></div>
+                            </div>
+                        </Link>
+                        <Link to="/bazar" className="group relative aspect-[3/4] overflow-hidden rounded-xl soft-glow cursor-pointer transition-all hover:-translate-y-2">
+                            <img className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSe043wGoMpI2XKensMunjuGVl7Ekt4y_jc3RZBkIAximHMkTodbl8RepcfIq30oRDugO28nynEaq7t-Ph9hG4gZ5v19Z-IKykQrAUSaaScwoEpQ3eAQ1pT7t4W0ZR4ejG4CaRNfHIHtJ3H5mHxKIjccx3EJ_qFSDe7PesXW1ZzpvHvgHyGdxdYKM_X3sBlYyRUpkNSr6XKokS-qlCPsVybOqppbliXA559DgJYW-GdRbMtuVOklwmf8_nxYHdn7JXQmJv3CwTdVvR" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                            <div className="absolute bottom-0 left-0 p-8 w-full text-white">
+                                <span className="text-primary text-xs font-bold tracking-widest uppercase mb-2 block">Tienda</span>
+                                <h3 className="text-2xl font-display font-bold">Bazar Espiritual</h3>
+                                <div className="mt-4 flex items-center gap-2 text-primary font-bold"><span>Explorar Tienda</span> <span className="material-symbols-outlined text-sm">arrow_forward</span></div>
+                            </div>
+                        </Link>
+                        <Link to="/servicios" className="group relative aspect-[3/4] overflow-hidden rounded-xl soft-glow cursor-pointer transition-all hover:-translate-y-2">
+                            <img className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5fwA3fxet7MTaU8EsayKtw1kf2wNNwcG5cUI-341r2dNOb6qLe1uTEXW_2JbW4LbycmDMc4GN9acalAmPFyuw4lgAGkSkxAEDcAQxeWkgc1Kj6atkEGDalQE5ElYP8-Q8mSDuBxoO1kyXwTs9YBSPHX9U1-S_p7GslMNdvOmRqjmf2HAi0slBsgQYOwpWorwT38G0p6FiGuKcOaCJZbwHc9AFUYClE2lKKAoGXVAXCNn_KeG2IQ23ASd5LiPx9jd8Ez2994M0Bg1h" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                            <div className="absolute bottom-0 left-0 p-8 w-full text-white">
+                                <span className="text-primary text-xs font-bold tracking-widest uppercase mb-2 block">Sanación</span>
+                                <h3 className="text-2xl font-display font-bold">Servicios Holísticos</h3>
+                                <div className="mt-4 flex items-center gap-2 text-primary font-bold"><span>Ver Servicios</span> <span className="material-symbols-outlined text-sm">arrow_forward</span></div>
+                            </div>
+                        </Link>
+                    </div>
+                </section>
+            </main>
+        );
+
+        const QuienSoyPage = () => (
+            <main className="max-w-[1100px] mx-auto px-6 py-12">
+                <section className="flex flex-col lg:flex-row items-center gap-16 mb-24">
+                    <div className="w-full lg:w-1/2 flex justify-center">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-primary/20 organic-border -rotate-6 blur-2xl"></div>
+                            <div className="relative size-80 lg:size-96 bg-cover bg-center organic-border border-4 border-primary/30" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuD6i4KKVW0RPamGJihTwbhnev3qWQA87R6__OuAkn2BJRxkvp9vg8SLjw9u0RA4IDxN1c_1nmgA0K2phrqkscSeg2e_PclhPQdfL3ysnJnDIZKTV0DMvLPIqv7Of3uuLj_aQi0tcFw4AeNOLR9inMq_YVoiJY-pTJ8qayzaqrnAGWI6wL-xOA4hWMOOAyLknKBxgpvdHYnULZoZ8u_2mV2NxMJiORdwjkp0nA7P5Z6EfT7fs9dwLag3X2T3Jt478TjCeEl82GLbRAsb")'}}></div>
+                            <div className="absolute -bottom-4 -right-4 bg-white dark:bg-background-dark p-4 rounded-xl shadow-xl border border-primary/20">
+                                <span className="text-primary font-display italic text-lg">"Guiando desde el corazón"</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-full lg:w-1/2 space-y-6">
+                        <span className="text-accent-red font-bold tracking-widest uppercase text-sm">Mi Camino y Propósito</span>
+                        <h1 className="text-4xl lg:text-5xl font-display font-bold text-[#161513] dark:text-white leading-tight">Bienvenidos a mi <span className="text-primary">Santuario de Paz</span></h1>
+                        <p className="text-lg text-gray-600 dark:text-gray-400 font-sans leading-relaxed">Soy la fundadora de Caridad Espiritual, una guía con más de 15 años dedicada a la sanación del alma y la reconexión con la luz interior.</p>
+                        <div className="flex gap-4">
+                            <Link to="/servicios" className="bg-primary text-white px-8 py-3 rounded-lg font-bold hover:shadow-lg transition-all">Explorar Servicios</Link>
+                            <Link to="/contacto" className="border-2 border-primary/30 text-primary px-8 py-3 rounded-lg font-bold hover:bg-primary/5 transition-all">Contáctame</Link>
+                        </div>
+                    </div>
+                </section>
+                <section className="mb-32">
+                    <div className="text-center max-w-2xl mx-auto mb-16">
+                        <span className="material-symbols-outlined text-primary text-4xl mb-4">auto_awesome</span>
+                        <h2 className="text-3xl font-display font-bold mb-4 dark:text-white">El Despertar de mi Alma</h2>
+                        <div className="w-24 h-1 bg-primary mx-auto rounded-full"></div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <p className="italic border-l-4 border-accent-red pl-6 py-2 text-gray-700 dark:text-gray-300">"Mi viaje comenzó en los silencios de mi infancia, donde las sombras no eran oscuridad, sino mensajeras."</p>
+                        <p className="text-gray-700 dark:text-gray-300">Crecí en una familia donde la espiritualidad era el aire que respirábamos. Caridad Espiritual nació como un puente entre lo terrenal y lo sagrado.</p>
+                    </div>
+                </section>
+            </main>
+        );
+
+        const BazarPage = () => {
+            const categories = ['Velas', 'Cristales', 'Incienso', 'Rituales'];
+            const products = [
+                { id: 1, name: 'Vela Llama Sagrada', price: '$34.00', tag: 'Más vendido', color: 'bg-terracotta', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAEg8aUyyN2eW-DjTZYZSa6TFfZ0HzP1RcRa7JwMMNfdD3gDay3Uk0dPNstuQ2tUhRnFsH3oYIMke2fLY_kzBu0xuGclo3d3xrenP0_BZZjlRX6f_jrVe44PTgAtf206OcawVs2QM0WtYWqIgbf3E2cmA6WF-xoW4o98LN84_fNJ3ezjAs0ZV3p5FNSf0msuulKtGr1dQnwG5DbxrITsxm_HT20sPXIbZErAPvnjrecatUNygfBPmtBImi6l7gWzW_O7CssP4z2Cx9j' },
+                { id: 2, name: 'Drusa de Amatista', price: '$48.00', tag: null, color: '', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD8J7Q8-pvRPu44jXvOvzAXe4hqi5UXq8UHEBhLT4mM6wLShPcZFBe4PMwrg2t7CpKNd7hzayeYOjClVbTRfQa96-nUuXMxtiUm_luEhlLnJgdRjBAls_lhGtmEvasUUR_LrM6o65H8rTAUAyv_G62o1XSI2TxspfffKiX7oCQqQ9hG3tUExktMVzi_sWd8JD8pk-2rnbkwAm3Pgd3nyN0Vn3BqzQlJ1Uh29qawJLQBy4kiqwQ4C-6o1tjE6OI-VHl39vfo6WkI6iSz' },
+                { id: 3, name: 'Kit Ritual Limpieza', price: '$22.00', tag: 'Sostenible', color: 'bg-forest', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCp13wGXOH9YyXLo_-BaROaksNxjOf951UIZmgSmokQ5EKHxXz-KGM53Jahqzyt2pI2lJTP2_tdv-tfxyuxZJ_vWhgOqfDsrEklzwK5wFe4QeLG2fIUomVp2JsecncWxA4-Aw3y7Ixknp03SHAgrC9LT5i8dMGKev8hYcmjTsGzX1HUi4DM_5I8NJeVWNO5GKBfkHKsL5TK5r5tbei-EoQKrCoR2P40t6lje_n2tA7vFbOIHxZtyoIcIGnPmsUVWGQlUPEtuqRlbkbV' }
+            ];
+
+            return (
+                <main className="max-w-[1400px] mx-auto w-full px-6 lg:px-20 py-8">
+                    <div className="mb-12">
+                        <h2 className="font-display text-4xl lg:text-5xl font-bold mb-4 italic">Herramientas Espirituales</h2>
+                        <p className="text-[#7f786c] dark:text-[#a19b91] text-lg max-w-2xl font-light">Artefactos artesanales seleccionados a mano para elevar tu práctica espiritual.</p>
+                    </div>
+                    <div className="flex flex-col lg:flex-row gap-12">
+                        <aside className="w-full lg:w-64 shrink-0">
+                            <h3 className="font-display text-lg font-bold mb-4">Categorías</h3>
+                            <div className="flex flex-col gap-1">
+                                <button className="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white font-medium text-left">
+                                    <span className="material-symbols-outlined text-xl">grid_view</span> Todos
+                                </button>
+                                {categories.map(cat => (
+                                    <button key={cat} className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white dark:hover:bg-white/5 transition-all text-left">
+                                        <span className="material-symbols-outlined text-xl">workspace_premium</span> {cat}
+                                    </button>
+                                ))}
+                            </div>
+                        </aside>
+                        <div className="flex-1">
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                                {products.map(prod => (
+                                    <div key={prod.id} className="product-card group bg-white dark:bg-[#1f293d] border border-primary/30 rounded-lg overflow-hidden flex flex-col soft-glow">
+                                        <div className="relative aspect-[4/5] overflow-hidden">
+                                            <img src={prod.img} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                                            {prod.tag && <span className={`absolute top-4 left-4 ${prod.color} text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-widest`}>{prod.tag}</span>}
+                                        </div>
+                                        <div className="p-6 flex flex-col flex-1">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="font-display text-xl font-bold">{prod.name}</h3>
+                                                <span className="text-terracotta font-bold text-lg">{prod.price}</span>
+                                            </div>
+                                            <p className="text-[#7f786c] text-sm mb-6">Materiales puros y vibración elevada para tu hogar.</p>
+                                            <button className="mt-auto bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-md transition-colors text-sm">Añadir al carrito</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            );
+        };
+
+        const HoroscopoPage = () => {
+            const signs = ['Aries', 'Tauro', 'Géminis', 'Cáncer', 'Leo', 'Virgo', 'Libra', 'Escorpio', 'Sagitario', 'Capricornio', 'Acuario', 'Piscis'];
+            return (
+                <main className="max-w-[1200px] mx-auto px-6 lg:px-40 py-12">
+                    <section className="text-center mb-16">
+                        <div className="inline-block px-4 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase mb-6">Guía del Cosmos</div>
+                        <h2 className="font-display text-4xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-slate-700 to-primary bg-clip-text text-transparent dark:from-primary dark:via-white dark:to-primary">Horóscopo Celestial</h2>
+                        <p className="max-w-2xl mx-auto text-slate-600 dark:text-slate-400 text-lg">Recibe la sabiduría de los astros para armonizar tu energía.</p>
+                    </section>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 p-4">
+                        {signs.map(sign => (
+                            <div key={sign} className="group relative bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-2xl p-8 text-center soft-glow cursor-pointer transition-all duration-300">
+                                <span className="material-symbols-outlined text-5xl text-primary mb-4 block group-hover:scale-110 transition-transform">auto_awesome</span>
+                                <h4 className="font-display text-xl font-bold mb-1">{sign}</h4>
+                                <p className="text-xs text-slate-400 mb-4 italic">Guía Semanal</p>
+                            </div>
+                        ))}
+                    </div>
+                </main>
+            );
+        };
+
+        const ServiciosPage = () => {
+            const services = [
+                { title: 'Lectura de Tarot', price: '$50', time: '60 min', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD3-EiplD3Xi_kYHN7z-aAZOakxb4TkfNVlb66bmbtuare_Y6BKQkNeDH7imgzOl-l5LYVXHdkjulKfe4CLwkzfSfqa47jnOA4IE2jFrpJLzmES8sH-O7f4l_Xo8aMxXm02voo1I8CIHnD_tF81hci7w9hv7k3wpy0kutYw-VMLJEK1RpaSc1M-QYAWx-c8LXemHNutuwrLxXEFJJLBL221sdJDPVNtoqR53helZhXbxzATZ1jKR031NaoVRwTKQP1_XDxmK57CeOWt' },
+                { title: 'Limpieza Energética', price: '$85', time: '60 min', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBPvoLarP5mqg83N6HMFOZCFwv9WQ9DiQMzih_P4webyJUql7jha2wpPwxdy9CR-MBi9ACyZjssmNDh0ggYLQ-RCRwdZZ4oE05XRTYZE39TochHPQhI-yDA0ArwgetTWPIiab80SIjPof4igsp4jzoOS3kitAliLY_rcsZpxXpCien4FIKtiSNy9UoKBRjN_VGXKa7xIheKf9dCzQvzOKyGdOsyavvmtixE8cbGHt5abu0m-lCVypky7SmM0F5dcxKKpCYXQk_JOmVu' },
+                { title: 'Terapia de Sonido', price: '$70', time: '60 min', img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAoOWu9IHefOzPV7Txn7XygfNUtMk1kQg94hB-hQ2nJ_psZOvMwJW370wxCXRtwGenxjN_cSiCW9hwOnKLwZGifm9BbkZ49ICvAzoPmyIpDg0m4-Uj1V__1ZALdrvkif-O4QPf3cQpWsvnJp6rAyLGBXy3pqUPnh-5X2fNG55Rf_7BS7RNo5R-vqMh4cIduKcCT8bTW8qHKq8F2rHNALKsA7DCeW1_vOceAmPPm61iY7wDSBsnhjfaQiBx_lw5LP7GSyzNGx8oLSpbo' }
+            ];
+
+            return (
+                <main className="max-w-[1200px] mx-auto py-12 px-6">
+                    <h2 className="text-4xl font-display font-bold text-center mb-16">Nuestros Servicios Espirituales</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {services.map((service, idx) => (
+                            <div key={idx} className="bg-white dark:bg-gray-800/50 rounded-xl overflow-hidden soft-glow border border-primary/5 hover:border-primary/30 transition-all group">
+                                <div className="aspect-[4/3] w-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{backgroundImage: `url(${service.img})`}}></div>
+                                <div className="p-6 space-y-4">
+                                    <div className="flex justify-between items-start">
+                                        <h3 className="text-xl font-bold font-display">{service.title}</h3>
+                                        <span className="text-primary font-bold">{service.price}</span>
+                                    </div>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Encuentra claridad y restaura el flujo natural de tu paz interior.</p>
+                                    <div className="flex items-center gap-2 text-xs text-gray-400">
+                                        <span className="material-symbols-outlined text-sm">schedule</span> <span>{service.time}</span>
+                                    </div>
+                                    <button className="w-full py-3 bg-primary text-white rounded-lg font-bold text-sm tracking-widest hover:bg-[#b08e5a] transition-colors shadow-lg shadow-primary/20">RESERVAR AHORA</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </main>
+            );
+        };
+
+        const ContactoPage = () => (
+            <main className="flex-1 flex flex-col items-center">
+                <div className="w-full max-w-5xl px-6 py-12 md:py-20 text-center">
+                    <div className="relative bg-cover bg-center flex flex-col justify-center items-center overflow-hidden rounded-xl min-h-[320px] shadow-xl" style={{backgroundImage: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.3)), url("https://lh3.googleusercontent.com/aida-public/AB6AXuCasYqzOrF-ap7s84xD-I-wIKBQogzOQOvcBMu0jlDhCVM6OMMwVE4nuEck1AUEx16KKIvRBqbdJ9PIrdgFKXGmioUHOICte_cACdCv-9ZBXoUV-ChAeu9d2rY-rF7tvuhWEaCZXYE-cZK23Xx4v3v4Lo3HpljwlYou_lM2TxuVlTtrmRTy_SEcV7PVgYOTaxFb3KvSS2FtNmOhwssPfIS0LG4Qsk0Fkf5dfMRSKBwEBMispPOKSYO01SmT61Wh_Izkyf_qNwt_QBsp")'}}>
+                        <h1 className="font-display text-white text-4xl md:text-5xl font-bold leading-tight px-4 max-w-3xl">Conecta con tu esencia</h1>
+                        <p className="text-white/90 text-lg md:text-xl font-light mt-4 px-4 max-w-2xl">Estamos aquí para acompañarte en tu camino espiritual.</p>
+                    </div>
+                </div>
+                <div className="w-full max-w-6xl px-6 pb-20 grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    <div className="lg:col-span-5 space-y-8">
+                        <div className="soft-glow-card bg-white dark:bg-slate-800/50 p-8 rounded-2xl border border-primary/5">
+                            <h3 className="font-display text-2xl font-bold mb-6 text-primary">Contacto</h3>
+                            <div className="space-y-6">
+                                <div className="flex items-start gap-4">
+                                    <span className="material-symbols-outlined text-primary p-2 bg-primary/10 rounded-lg">chat_bubble</span>
+                                    <div><p className="text-lg">+34 600 000 000</p></div>
+                                </div>
+                                <div className="flex items-start gap-4">
+                                    <span className="material-symbols-outlined text-primary p-2 bg-primary/10 rounded-lg">mail</span>
+                                    <div><p className="text-lg">paz@caridadespiritual.com</p></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="lg:col-span-7">
+                        <div className="soft-glow-card bg-white dark:bg-slate-800 p-8 md:p-10 rounded-2xl border border-primary/10">
+                            <h2 className="font-display text-3xl font-bold mb-2">Envíanos tu luz</h2>
+                            <form className="mt-8 space-y-6" onSubmit={(e) => e.preventDefault()}>
+                                <input className="w-full rounded-xl border border-primary/20 bg-background-light dark:bg-slate-900 px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="Nombre Completo" type="text" />
+                                <input className="w-full rounded-xl border border-primary/20 bg-background-light dark:bg-slate-900 px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none" placeholder="Email" type="email" />
+                                <textarea className="w-full rounded-xl border border-primary/20 bg-background-light dark:bg-slate-900 px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none h-32" placeholder="Tu Mensaje"></textarea>
+                                <button className="w-full bg-growth-green hover:bg-[#34664F] text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-all" type="submit">Enviar Mensaje</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        );
+
+        // --- Main App ---
+
+        const App = () => {
+            useEffect(() => {
+                // Scroll to top on navigation
+                window.scrollTo(0, 0);
+            }, []);
+
+            return (
+                <div className="flex flex-col min-h-screen">
+                    <Navigation />
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/quien-soy" element={<QuienSoyPage />} />
+                        <Route path="/bazar" element={<BazarPage />} />
+                        <Route path="/horoscopo" element={<HoroscopoPage />} />
+                        <Route path="/servicios" element={<ServiciosPage />} />
+                        <Route path="/contacto" element={<ContactoPage />} />
+                    </Routes>
+                    <Footer />
+                </div>
+            );
+        };
+
+        const rootElement = document.getElementById('root');
+        const root = createRoot(rootElement);
+        root.render(
+            <MemoryRouter>
+                <App />
+            </MemoryRouter>
+        );
+    </script>
+</body>
+</html>
